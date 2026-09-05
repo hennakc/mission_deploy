@@ -2,9 +2,9 @@
 // possible schedule for you, via Groq's chat API.
 
 // ============================================================================
-// PASTE YOUR GROQ API KEY HERE (the one thing you asked where to put):
+// PASTE YOUR GROQ API KEY HERE (put it between the quotes, e.g. "gsk_..."):
 // ============================================================================
-const API_KEY = "YOUR_API_KEY_HERE"; <-- put your key between the quotes, e.g. "gsk_..."
+const GROQ_API_KEY = "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";
 // ============================================================================
 // Get a free key at https://console.groq.com/keys
 //
