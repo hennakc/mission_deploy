@@ -4,7 +4,7 @@
 // ============================================================================
 // PASTE YOUR GROQ API KEY HERE (put it between the quotes, e.g. "gsk_..."):
 // ============================================================================
-const GROQ_API_KEY = process.env.API_KEY;
+const GROQ_API_KEY = "YOUR_API_KEY_HERE";
 // ============================================================================
 // Get a free key at https://console.groq.com/keys
 //
