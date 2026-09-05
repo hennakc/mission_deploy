@@ -164,7 +164,16 @@
   display:flex;
   align-items:center;
   justify-content:center;
-  cursor:default;
+  cursor:pointer;
+  border:1px solid var(--ink);
+  font:inherit;
+  color:inherit;
+}
+.pj-tile.pj-blank:hover span{
+  transform:rotate(-2deg) scale(1.05);
+}
+.pj-tile.pj-blank span{
+  transition:transform .2s ease;
 }
 .pj-tile.pj-blank span{
   font-family:'Chillax',sans-serif;
@@ -177,5 +186,84 @@
   border:2px solid var(--ink);
   padding:9px 20px;
   border-radius:999px;
+}
+
+/* ---------- "coming soon" is a lie — modal ---------- */
+.cs-backdrop{
+  position:fixed;
+  inset:0;
+  z-index:120;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:5vw;
+  background:rgba(0,0,0,.6);
+}
+.cs-backdrop.is-open{ display:flex; }
+
+.cs-card{
+  position:relative;
+  width:min(440px, 100%);
+  background:var(--white);
+  border:3px solid var(--ink);
+  box-shadow:var(--shadow);
+  padding:34px 26px 26px;
+  text-align:center;
+  transform:rotate(-1deg);
+  animation:csPop .28s cubic-bezier(.2,1.4,.5,1);
+}
+@keyframes csPop{
+  from{ transform:rotate(-1deg) scale(.7); opacity:0; }
+  to{ transform:rotate(-1deg) scale(1); opacity:1; }
+}
+
+.cs-close{
+  position:absolute;
+  top:8px;
+  right:10px;
+  background:none;
+  border:none;
+  font-size:1.2rem;
+  cursor:pointer;
+  color:var(--ink);
+  line-height:1;
+}
+
+.cs-emoji{
+  font-size:3rem;
+  line-height:1;
+  margin-bottom:10px;
+}
+.cs-title{
+  font-family:'Chillax',sans-serif;
+  font-weight:700;
+  font-size:1.5rem;
+  letter-spacing:1px;
+  text-transform:uppercase;
+  margin:0 0 12px;
+}
+.cs-body{
+  font-family:'Chillax',sans-serif;
+  font-size:1rem;
+  line-height:1.5;
+  margin:0 0 20px;
+}
+.cs-ok{
+  font-family:'Chillax',sans-serif;
+  font-weight:700;
+  font-size:.9rem;
+  letter-spacing:.5px;
+  text-transform:uppercase;
+  color:var(--ink);
+  background:var(--cream);
+  border:2px solid var(--ink);
+  box-shadow:3px 3px 0 var(--ink);
+  padding:11px 22px;
+  border-radius:999px;
+  cursor:pointer;
+}
+.cs-ok:active{
+  transform:translate(3px,3px);
+  box-shadow:none;
 }
 

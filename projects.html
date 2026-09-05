@@ -59,8 +59,8 @@
       <span class="pj-title pj-title-white">Cheetah Crawl</span>
     </a>
 
-    <div class="pj-tile pj-blank"><span>coming soon</span></div>
-    <div class="pj-tile pj-blank"><span>coming soon</span></div>
+    <button type="button" class="pj-tile pj-blank" data-comingsoon><span>coming soon</span></button>
+    <button type="button" class="pj-tile pj-blank" data-comingsoon><span>coming soon</span></button>
 
   </div>
 
@@ -89,6 +89,18 @@
   <a href="projects.html">🕹️ All Games</a>
 </nav>
 <script src="nav.js"></script>
+
+<!-- ================= "COMING SOON" IS A LIE ================= -->
+<div class="cs-backdrop" id="csBackdrop" role="dialog" aria-modal="true" aria-labelledby="csTitle">
+  <div class="cs-card">
+    <button class="cs-close" id="csClose" aria-label="Close">✕</button>
+    <div class="cs-emoji" id="csEmoji">🤡</div>
+    <h2 class="cs-title" id="csTitle">"COMING SOON"</h2>
+    <p class="cs-body" id="csBody"></p>
+    <button class="cs-ok" id="csOk">fine, I'll stay bored</button>
+  </div>
+</div>
+<script src="comingsoon.js"></script>
 
 <!-- ================= FAKE HACK TAKEOVER ================= -->
 <div class="hack-overlay" id="hackOverlay">
