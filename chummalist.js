@@ -1,25 +1,7 @@
 // Chumma List — a to-do list that then generates the most unproductive
-// possible schedule for you, via Groq's chat API.
-
-// ============================================================================
-// PASTE YOUR GROQ API KEY HERE (put it between the quotes, e.g. "gsk_..."):
-// ============================================================================
-const GROQ_API_KEY = "YOUR_API_KEY_HERE";
-// ============================================================================
-// Get a free key at https://console.groq.com/keys
-//
-// IMPORTANT: this is a plain static site with no server, so a key pasted here
-// ships straight to every visitor's browser and is visible in the page's
-// network tab / source. That's fine for playing around on your own machine,
-// but do NOT deploy this publicly with a real key in it — anyone could copy
-// it and spend your Groq quota. If you ever put this online for real, move
-// this fetch call behind a small serverless function (Vercel/Netlify/etc.)
-// that holds the key server-side instead.
-// ============================================================================
-
-// llama-3.1-8b-instant was retired by Groq. openai/gpt-oss-20b (with low
-// reasoning effort) is fast, currently available, and works well for this.
-const GROQ_MODEL = "openai/gpt-oss-20b";
+// possible schedule for you. The actual Groq call lives server-side in
+// /api/schedule.js (a Vercel serverless function) — the key is set as an
+// environment variable in the Vercel project, never in this file or the repo.
 
 const $ = (id) => document.getElementById(id);
 
@@ -111,60 +93,23 @@ renderList();
 // GET SCHEDULE
 // ---------------------------------------------------------------------------
 
-const SYSTEM_PROMPT = `You are chummaDO's "Unproductivity Coach." You NEVER give helpful, productive,
-or motivational advice. Given a person's to-do list, you generate a mocking,
-funny, roast-style DAILY SCHEDULE that is deliberately, aggressively
-unproductive and guarantees they get nothing done.
-
-Rules:
-- Output ONLY 6 to 8 lines, one per schedule entry. Nothing else.
-- Each line MUST be formatted exactly as: "TIME - ACTIVITY".
-- Activities should be absurd, lazy, self-sabotaging, and funny — e.g. waking
-  up just to prove a point then going back to sleep, opening one to-do item
-  and immediately closing the laptop, scheduling a nap to recover from a nap.
-- If given real to-do items, roast them specifically and schedule time to
-  actively avoid doing them.
-- Never suggest anything genuinely productive. Never break character.
-- Absolutely no intro sentence, no outro sentence, no numbering, no markdown,
-  no code fences/backticks — just the raw schedule lines, nothing before or after.`;
-
-function buildUserPrompt() {
-  if (items.length === 0) {
-    return "This person has no to-do items at all. Roast their lack of ambition and build them an unproductive schedule anyway.";
-  }
-  const list = items.map((it) => `- ${it.text}`).join("\n");
-  return `Here is my to-do list:\n${list}\n\nBuild me the least productive schedule possible, roasting these items.`;
-}
-
 // Matches lines like "9:00 AM - activity" or "14:30 - activity", tolerating
 // a leading bullet/backtick and either a hyphen or an en dash as separator.
 const SCHEDULE_LINE_RE =
   /^[\s"'`*\-•]*\d{1,2}(:\d{2})?\s*(AM|PM|am|pm)?\s*[–-]\s*.+$/;
 
 async function fetchGroqSchedule() {
-  const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+  const res = await fetch("/api/schedule", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${GROQ_API_KEY}`,
-    },
-    body: JSON.stringify({
-      model: GROQ_MODEL,
-      temperature: 1,
-      max_tokens: 500,
-      reasoning_effort: "low",
-      messages: [
-        { role: "system", content: SYSTEM_PROMPT },
-        { role: "user", content: buildUserPrompt() },
-      ],
-    }),
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ items: items.map((it) => it.text) }),
   });
   if (!res.ok) {
     const body = await res.text().catch(() => "");
-    throw new Error(`Groq request failed: ${res.status} ${body}`);
+    throw new Error(`Schedule request failed: ${res.status} ${body}`);
   }
   const data = await res.json();
-  const text = data.choices?.[0]?.message?.content || "";
+  const text = data.text || "";
 
   const lines = text
     .split("\n")
@@ -229,10 +174,8 @@ scheduleBtn.addEventListener("click", async () => {
   const originalLabel = scheduleBtn.textContent;
   scheduleBtn.textContent = "CONSULTING THE COUNCIL OF LAZINESS...";
 
-  const hasKey = GROQ_API_KEY && GROQ_API_KEY.trim().length > 0;
-
   try {
-    const lines = hasKey ? await fetchGroqSchedule() : fallbackSchedule();
+    const lines = await fetchGroqSchedule();
     scheduleTitle.textContent = "Your Extremely Unproductive Schedule";
     renderSchedule(lines);
   } catch (err) {
