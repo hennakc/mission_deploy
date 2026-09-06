@@ -54,13 +54,13 @@ cd mission_deploy]
 For Software:
 
 # Screenshots 
-![Screenshot1](home-page.png)
+![Screenshot1](1.home-page.png)
 *it*
 
-![Screenshot2](page.png)
+![Screenshot2](2.page.png)
 *it contains all our useless games and functions.*
 
-![Screenshot3](best-To-Do.png)
+![Screenshot3](3.best-to-do.png)
 *it creates useless unproductive schedules from out To-Do lists*
 
 # Diagrams
